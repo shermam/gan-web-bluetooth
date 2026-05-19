@@ -24,10 +24,13 @@
     "url": "git+https://github.com/afedotov/gan-web-bluetooth.git"
   },
   "devDependencies": {
-    "@types/web-bluetooth": "^0.0.20"
+    "@types/web-bluetooth": "^0.0.21",
+    "typescript": "^6.0.3"
+  },
+  "scripts": {
+    "lint": "tsc"
   },
   "files": [
-    "dist",
     "src",
     "README.md",
     "LICENSE.txt",

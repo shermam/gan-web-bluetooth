@@ -1,7 +1,4 @@
 {
-  "typeAcquisition": {
-    "enable": true
-  },
   "compilerOptions": {
     "checkJs": true,
     "target": "esnext",
@@ -16,6 +13,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "importHelpers": false,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "types": ["web-bluetooth"]
   }
 }
