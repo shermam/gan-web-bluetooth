@@ -75,19 +75,23 @@ async function autoRetrieveMacAddress(device) {
       resolve(null);
     }
     const abortController = new AbortController();
-    const onAdvEvent = (/** @type {Event} */ evt) => {
-      device.removeEventListener("advertisementreceived", onAdvEvent);
-      abortController.abort();
-      // BluetoothAdvertisingEvent
-      const mac = extractMAC(evt.manufacturerData);
-      resolve(mac || null);
-    };
     const onAbort = () => {
-      device.removeEventListener("advertisementreceived", onAdvEvent);
       abortController.abort();
       resolve(null);
     };
-    device.addEventListener("advertisementreceived", onAdvEvent);
+
+    device
+      .when("advertisementreceived")
+      .take(1)
+      .subscribe(
+        (e) => {
+          const evt = /** @type {BluetoothAdvertisingEvent} */ (e);
+          const mac = extractMAC(evt.manufacturerData);
+          resolve(mac || null);
+        },
+        { signal: abortController.signal },
+      );
+
     device
       .watchAdvertisements({ signal: abortController.signal })
       .catch(onAbort);

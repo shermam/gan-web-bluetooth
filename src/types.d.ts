@@ -1,5 +1,3 @@
-import { Observable } from "./observable";
-
 /**
  * GAN Smart Timer events/states
  */
@@ -66,9 +64,9 @@ export interface GanTimerConnection {
  */
 export interface GanCubeEncrypter {
   /** Encrypt binary message buffer represented as Uint8Array */
-  encrypt(data: Uint8Array): Promise<Uint8Array>;
+  encrypt(data: Uint8Array): Uint8Array<ArrayBuffer>;
   /** Decrypt binary message buffer represented as Uint8Array */
-  decrypt(data: Uint8Array): Promise<Uint8Array>;
+  decrypt(data: Uint8Array): Uint8Array<ArrayBuffer>;
 }
 
 /** Command for requesting information about GAN Smart Cube hardware  */
@@ -251,7 +249,9 @@ export interface GanCubeRawConnection {
 /** Protocol Driver interface */
 export interface GanProtocolDriver {
   /** Create binary command message for cube device */
-  createCommandMessage(command: GanCubeCommand): Uint8Array | undefined;
+  createCommandMessage(
+    command: GanCubeCommand,
+  ): Uint8Array<ArrayBuffer> | undefined;
   /** Handle binary event messages from cube device */
   handleStateEvent(
     conn: GanCubeRawConnection,

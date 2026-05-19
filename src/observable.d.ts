@@ -76,61 +76,57 @@ interface ObservableEventListenerOptions {
   passive: boolean;
 }
 
-// reference: https://www.typescriptlang.org/docs/handbook/declaration-merging.html#global-augmentation
-declare global {
-  export class Observable<T> {
-    constructor(callback: SubscribeCallback<T>);
-    subscribe(observer?: ObserverUnion<T>, options?: SubscribeOptions): void;
+interface Observable<T> {
+  subscribe(observer?: ObserverUnion<T>, options?: SubscribeOptions): void;
 
-    // Constructs a native Observable from value if it's any of the following:
-    //   - Observable
-    //   - AsyncIterable
-    //   - Iterable
-    //   - Promise
-    static from<T>(value: Containers<T>): Observable<T>;
+  // Observable-returning operators. See "Operators" section in the spec.
+  //
+  // takeUntil() can consume promises, iterables, async iterables, and other
+  // observables.
+  takeUntil(value: Containers<T>): Observable<T>;
+  map<TO>(mapper: Mapper<T, TO>): Observable<TO>;
+  filter(predicate: Predicate<T>): Observable<T>;
+  take(amount: number): Observable<T>;
+  drop(amount: number): Observable<T>;
+  flatMap<TO>(mapper: Mapper<T, Containers<TO>>): Observable<TO>;
+  switchMap<TO>(mapper: Mapper<T, TO>): Observable<TO>;
+  inspect(inspectorUnion?: ObservableInspectorUnion<T>): Observable<T>;
+  catch(callback: CatchCallback): Observable<T>;
+  finally(callback: VoidFunction): Observable<T>;
 
-    // Observable-returning operators. See "Operators" section in the spec.
-    //
-    // takeUntil() can consume promises, iterables, async iterables, and other
-    // observables.
-    takeUntil(value: Containers<T>): Observable<T>;
-    map<TO>(mapper: Mapper<T, TO>): Observable<TO>;
-    filter(predicate: Predicate<T>): Observable<T>;
-    take(amount: number): Observable<T>;
-    drop(amount: number): Observable<T>;
-    flatMap<TO>(mapper: Mapper<T, Containers<TO>>): Observable<TO>;
-    switchMap<TO>(mapper: Mapper<T, TO>): Observable<TO>;
-    inspect(inspectorUnion?: ObservableInspectorUnion<T>): Observable<T>;
-    catch(callback: CatchCallback): Observable<T>;
-    finally(callback: VoidFunction): Observable<T>;
-
-    // Promise-returning operators.
-    toArray(options?: SubscribeOptions): Promise<Array<T>>;
-    forEach(
-      callback: Visitor<T>,
-      options?: SubscribeOptions,
-    ): Promise<undefined>;
-    every(
-      predicate: Predicate<T>,
-      options?: SubscribeOptions,
-    ): Promise<boolean>;
-    first(options?: SubscribeOptions): Promise<T>;
-    last(options?: SubscribeOptions): Promise<T>;
-    find(predicate: Predicate<T>, options?: SubscribeOptions): Promise<T>;
-    some(predicate: Predicate<T>, options?: SubscribeOptions): Promise<boolean>;
-    reduce<TA>(
-      reducer: Reducer<TA, T>,
-      initialValue?: TA,
-      options?: SubscribeOptions,
-    ): Promise<TA>;
-  }
-
-  interface EventTarget {
-    when(
-      type: string,
-      options?: ObservableEventListenerOptions,
-    ): Observable<Event>;
-  }
+  // Promise-returning operators.
+  toArray(options?: SubscribeOptions): Promise<Array<T>>;
+  forEach(callback: Visitor<T>, options?: SubscribeOptions): Promise<undefined>;
+  every(predicate: Predicate<T>, options?: SubscribeOptions): Promise<boolean>;
+  first(options?: SubscribeOptions): Promise<T>;
+  last(options?: SubscribeOptions): Promise<T>;
+  find(predicate: Predicate<T>, options?: SubscribeOptions): Promise<T>;
+  some(predicate: Predicate<T>, options?: SubscribeOptions): Promise<boolean>;
+  reduce<TA>(
+    reducer: Reducer<TA, T>,
+    initialValue?: TA,
+    options?: SubscribeOptions,
+  ): Promise<TA>;
 }
 
-export {};
+interface ObservableConstructor {
+  new <T>(callback: SubscribeCallback<T>): Observable<T>;
+
+  // Constructs a native Observable from value if it's any of the following:
+  //   - Observable
+  //   - AsyncIterable
+  //   - Iterable
+  //   - Promise
+  from<T>(value: Containers<T>): Observable<T>;
+}
+
+declare var Observable: ObservableConstructor;
+
+// reference: https://www.typescriptlang.org/docs/handbook/declaration-merging.html#global-augmentation
+
+interface EventTarget {
+  when(
+    type: string,
+    options?: ObservableEventListenerOptions,
+  ): Observable<Event>;
+}

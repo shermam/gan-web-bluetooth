@@ -1,17 +1,9 @@
 {
-  "include": [
-    "src/**/*.ts",
-    "src/gan-cube-definitions.js",
-    "src/index.js",
-    "src/gan-cube-encrypter.js",
-    "src/gan-cube-protocol.js",
-    "src/gan-smart-cube.js",
-    "src/gan-smart-timer.js",
-    "src/types.d.ts",
-    "src/observable.d.ts"
-, "src/utils.js"  ],
+  "typeAcquisition": {
+    "enable": true
+  },
   "compilerOptions": {
-    "rootDir": "src",
+    "checkJs": true,
     "target": "esnext",
     "module": "esnext",
     "lib": ["esnext", "dom"],
@@ -24,7 +16,6 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "importHelpers": false,
-    "isolatedModules": true,
-    "sourceMap": false
+    "isolatedModules": true
   }
 }

@@ -109,11 +109,10 @@ class GanCubeClassicConnection {
 
   /**
    *
-   * @param {Uint8Array} message
-   * @returns {Promise<void>}
+   * @param {Uint8Array<ArrayBuffer>} message
    */
-  async sendCommandMessage(message) {
-    const encryptedMessage = await this.encrypter.encrypt(message);
+  sendCommandMessage(message) {
+    const encryptedMessage = this.encrypter.encrypt(message);
     return this.commandCharacteristic.writeValue(encryptedMessage);
   }
 
@@ -123,7 +122,7 @@ class GanCubeClassicConnection {
   onStateUpdate = async () => {
     const eventMessage = this.stateCharacteristic.value;
     if (eventMessage && eventMessage.byteLength >= 16) {
-      const decryptedMessage = await this.encrypter.decrypt(
+      const decryptedMessage = this.encrypter.decrypt(
         new Uint8Array(eventMessage.buffer),
       );
       return this.driver.handleStateEvent(this, decryptedMessage);
@@ -207,7 +206,7 @@ class GanGen2ProtocolDriver {
    * @param {GanCubeCommand} command
    */
   createCommandMessage(command) {
-    /** @type {Uint8Array | undefined} */
+    /** @type {Uint8Array<ArrayBuffer> | undefined} */
     let msg = new Uint8Array(20).fill(0);
     switch (command.type) {
       case "REQUEST_FACELETS":
@@ -413,10 +412,10 @@ class GanGen3ProtocolDriver {
   /**
    *
    * @param {GanCubeCommand} command
-   * @returns {Uint8Array | undefined}
+   * @returns {Uint8Array<ArrayBuffer> | undefined}
    */
   createCommandMessage(command) {
-    /** @type {Uint8Array | undefined} */
+    /** @type {Uint8Array<ArrayBuffer> | undefined} */
     let msg = new Uint8Array(16).fill(0);
     switch (command.type) {
       case "REQUEST_FACELETS":
@@ -778,10 +777,10 @@ class GanGen4ProtocolDriver {
   /**
    *
    * @param {GanCubeCommand} command
-   * @returns {Uint8Array | undefined}
+   * @returns {Uint8Array<ArrayBuffer> | undefined}
    */
   createCommandMessage(command) {
-    /** @type {Uint8Array | undefined} */
+    /** @type {Uint8Array<ArrayBuffer> | undefined} */
     const msg = new Uint8Array(20).fill(0);
     switch (command.type) {
       case "REQUEST_FACELETS":
